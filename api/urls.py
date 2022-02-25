@@ -3,5 +3,7 @@ from api import views
 
 
 urlpatterns=[
-    path('users',views.usersApi,name="user")
+    path('user/',views.usersApi,name="user"),
+    path('article/',views.articleApi,name="article"),
+     path('createarticle/',views.createArticleApi,name="createarticle")
 ]

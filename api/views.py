@@ -1,9 +1,12 @@
 
+import json
+from urllib import request, response
 from rest_framework.response import Response
 #from rest_framework.request import Request
 from rest_framework.decorators import api_view
 
-from api import serializers
+from api import serializers,models
+
 
 # Create your views here.
 class Student():
@@ -11,6 +14,28 @@ class Student():
         self.name=name
         self.roll_no=roll_no
         self.marks=marks
+
+
+@api_view()
+def articleApi(request):
+
+    articles=models.Article.objects.all()
+    response=serializers.ArticleSerializer(articles,many=True)
+    return Response(response.data)
+
+
+@api_view(["POST"])
+def createArticleApi(request):
+    body=json.loads(request.body)
+    response=serializers.ArticleSerializer(data=body)
+    #print(body)
+    if response.is_valid():
+        inst=response.save()
+        response=serializers.ArticleSerializer(inst)
+        return Response(response.data)
+
+    return Response(response.error)
+
 
 @api_view()
 def usersApi(request):
