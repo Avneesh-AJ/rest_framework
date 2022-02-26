@@ -4,12 +4,37 @@ from urllib import request, response
 from rest_framework.response import Response
 #from rest_framework.request import Request
 from rest_framework.decorators import api_view
+from rest_framework.generics import (
+    ListAPIView,
+    ListCreateAPIView,
+    RetrieveAPIView,
+    UpdateAPIView,
+    RetrieveUpdateAPIView
+)
 
 from api import serializers,models
 
+class ArticleListView(ListCreateAPIView):
+    #queryset=models.Article.objects.all()
+    serializer_class= serializers.ArticleSerializer
+
+    def get_queryset(self):
+        query={}
+        for key, value in self.request.GET.items():
+            query["{}__icontains".format(key)]=value
+        return models.Article.objects.filter(**query)
+
+class ArticleDetailView(RetrieveUpdateAPIView):
+    queryset=models.Article.objects.all()
+    serializer_class= serializers.ArticleSerializer
+
+
+    def post(self,request,pk):
+        return Response(request.body)
+
 
 # Create your views here.
-class Student():
+"""class Student():
     def __init__(self,name,roll_no,marks):
         self.name=name
         self.roll_no=roll_no
@@ -48,4 +73,4 @@ def usersApi(request):
         student2,
         student3
         ],many=True)
-    return Response(response.data)
+    return Response(response.data)"""
